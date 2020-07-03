@@ -12,10 +12,11 @@ from kinematic_model import robotKinematics
 from gaitPlanner import trotGait
 import pybullet as p
 import pybullet_data
+from pybullet_debuger import pybulletDebug  
 
 
 robotKinematics = robotKinematics()
-trot = trotGait() 
+trot = trotGait()
 
 def ThreadJob():
     rospy.spin()
@@ -27,7 +28,7 @@ def velCmdCallBack(msg):
 
     linearX = msg.linear.x
     linearY = -msg.linear.y
-    rotSpeed = msg.angular.x * 0.5
+    rotSpeed = msg.angular.x * 0.25
     # angularY = msg.angular.y
 
     if math.fabs(linearX)<0.1 and math.fabs(linearY)<0.1:
@@ -53,7 +54,7 @@ def QuadrupedCtrl():
     compensate = [1, -1, -1]
     Xdist = 0.38
     Ydist = 0.1161*2
-    height = 0.26
+    height = 0.25
     #body frame to foot frame vector
     bodytoFeet0 = np.matrix([[ Xdist/2 , -Ydist/2 , -height],
                             [ Xdist/2 ,  Ydist/2 , -height],
@@ -66,15 +67,21 @@ def QuadrupedCtrl():
     gaitLength = 0
     gaitYaw = 0
     rotSpeed = 0
-    T = 0.5
+    T = 0.25
 
     freq = 200
     rate = rospy.Rate(freq)
     setJSMsg = JointState()
     while not rospy.is_shutdown():
-        # print([gaitLength, gaitYaw, rotSpeed])
+        # pos , orn , gaitLength , gaitYaw , rotSpeed , T = pybulletDebug.cam_and_robotstates(quadruped)  
+        print([gaitLength, gaitYaw, rotSpeed])
         bodytoFeet = trot.loop(gaitLength , gaitYaw , rotSpeed , T , offset , bodytoFeet0)
-        print(bodytoFeet)
+        position = []
+        for i in range(4):
+            for j in range(3):
+                # print(bodytoFeet[i][j].tolist())
+                position.append(bodytoFeet[i][j].tolist())
+        # print(position)
         FR_angles, FL_angles, HR_angles, HL_angles , _ = robotKinematics.solve(orn , pos , bodytoFeet)
 
         #move movable joints
@@ -108,6 +115,7 @@ if __name__ == '__main__':
     add_thread.start()
 
     physicsClient = p.connect(p.GUI)#or p.DIRECT for non-graphical version
+    pybulletDebug = pybulletDebug()
     p.setAdditionalSearchPath(pybullet_data.getDataPath()) #optionally
     p.setGravity(0,0,-9.81)
     # cubeStartPos = [0,0,0.2]

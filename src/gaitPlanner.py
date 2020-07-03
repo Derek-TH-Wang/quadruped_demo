@@ -57,7 +57,7 @@ class trotGait:
 ##            print('foot UP', self.s , phi)
             
         
-        X = np.abs(V)*c*np.array([-0.05 ,
+        X = 2*np.abs(V)*c*np.array([-0.05 ,
                                   -0.06 ,
                                   -0.07 , 
                                   -0.07 ,
@@ -68,7 +68,7 @@ class trotGait:
                                   0.06 ,
                                   0.05 ])
     
-        Y = np.abs(V)*s*np.array([ 0.05 ,
+        Y = 2*np.abs(V)*s*np.array([ 0.05 ,
                                    0.06 ,
                                    0.07 , 
                                    0.07 ,
@@ -79,14 +79,14 @@ class trotGait:
                                    -0.06 ,
                                    -0.05 ])
     
-        Z = np.abs(V)*np.array([0. ,
+        Z = 1.5*np.abs(V)*np.array([0. ,
                                 0. ,
-                                0.05 , 
-                                0.05 ,
-                                0.05 ,
-                                0.06 , 
-                                0.06 ,
-                                0.06 ,
+                                0.1 , 
+                                0.1 ,
+                                0.1 ,
+                                0.12 , 
+                                0.12 ,
+                                0.12 ,
                                 0. ,
                                 0. ])
         swingX = 0.
@@ -152,7 +152,7 @@ class trotGait:
         if (self.phi >= 0.99):
             self.lastTime= time.time()
         self.phi = (time.time()-self.lastTime)/T
-#        print(self.phi)
+        # print(self.phi)
         #now it calculates step trajectory for every foot
         step_coord = self.stepTrajectory(self.phi + offset[0] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[0,:]))) #FR
         self.bodytoFeet[0,0] =  bodytoFeet_[0,0] + step_coord[0]
