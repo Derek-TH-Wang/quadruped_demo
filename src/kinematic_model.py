@@ -26,32 +26,37 @@ import geometrics as geo
 """
 class robotKinematics:
     def __init__(self):
-        self.targetAngs = np.matrix([0 , np.pi/4 , -np.pi/2, 0 ,#BR
-                                     0 , np.pi/4 , -np.pi/2, 0 ,#BL
-                                     0 , np.pi/4 , -np.pi/2, 0 ,#FL
-                                     0 , np.pi/4 , -np.pi/2, 0 ])#FR
+        # self.targetAngs = np.matrix([0 , np.pi/4 , -np.pi/2, 0 ,#BR
+        #                              0 , np.pi/4 , -np.pi/2, 0 ,#BL
+        #                              0 , np.pi/4 , -np.pi/2, 0 ,#FL
+        #                              0 , np.pi/4 , -np.pi/2, 0 ])#FR
                 
         """in meter """
-        self.L = 0.192 #length of robot joints
-        self.W = 0.075 #width of robot joints
-        self.coxa = 0.04#coxa length
-        self.femur = 0.10#femur length
-        self.tibia = 0.10#tibia length
+        # self.L = 0.19 #length of robot joints
+        # self.W = 0.08 #width of robot joints
+        # self.coxa = 0.04#coxa length
+        # self.femur = 0.10#femur length
+        # self.tibia = 0.10#tibia length
+        self.L = 0.38 #length of robot joints
+        self.W = 0.098 #width of robot joints
+        self.coxa = 0.062#coxa length
+        self.femur = 0.209#femur length
+        self.tibia = 0.18#tibia length
         """initial foot position"""
         #foot separation (0.182 -> tetta=0) and distance to floor
-        self.Ydist = 0.11
-        self.Xdist = self.L
-        self.height = 0.15
-        #body frame to coxa frame vector
+        # self.Ydist = 0.11
+        # self.Xdist = self.L
+        # self.height = 0.15
+        # #body frame to coxa frame vector
         self.bodytoFR0 = np.array([ self.L/2, -self.W/2 , 0])
         self.bodytoFL0 = np.array([ self.L/2,  self.W/2 , 0])
         self.bodytoBR0 = np.array([-self.L/2, -self.W/2 , 0])
         self.bodytoBL0 = np.array([-self.L/2,  self.W/2 , 0])
-        #body frame to foot frame vector
-        self.bodytoFR4 = np.array([ self.Xdist/2 , -self.Ydist/2 , -self.height])
-        self.bodytoFL4 = np.array([ self.Xdist/2 ,  self.Ydist/2 , -self.height])
-        self.bodytoBR4 = np.array([-self.Xdist/2 , -self.Ydist/2 , -self.height])
-        self.bodytoBL4 = np.array([-self.Xdist/2 ,  self.Ydist/2 , -self.height])
+        # #body frame to foot frame vector
+        # self.bodytoFR4 = np.array([ self.Xdist/2 , -self.Ydist/2 , -self.height])
+        # self.bodytoFL4 = np.array([ self.Xdist/2 ,  self.Ydist/2 , -self.height])
+        # self.bodytoBR4 = np.array([-self.Xdist/2 , -self.Ydist/2 , -self.height])
+        # self.bodytoBL4 = np.array([-self.Xdist/2 ,  self.Ydist/2 , -self.height])
 
     def solve(self, orn , pos , bodytoFeet):
         bodytoFR4 = np.asarray([bodytoFeet[0,0],bodytoFeet[0,1],bodytoFeet[0,2]])

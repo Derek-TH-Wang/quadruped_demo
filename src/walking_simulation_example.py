@@ -50,16 +50,15 @@ def QuadrupedCtrl():
     #robot properties
     """initial foot position"""
     #foot separation (Ydist = 0.16 -> tetta=0) and distance to floor
-    Xdist = 0.20
-    Ydist = 0.15
-    height = 0.15
+    compensate = [1, -1, -1]
+    Xdist = 0.38
+    Ydist = 0.1161*2
+    height = 0.26
     #body frame to foot frame vector
     bodytoFeet0 = np.matrix([[ Xdist/2 , -Ydist/2 , -height],
                             [ Xdist/2 ,  Ydist/2 , -height],
                             [-Xdist/2 , -Ydist/2 , -height],
                             [-Xdist/2 ,  Ydist/2 , -height]])
-
-    p.setRealTimeSimulation(1)
 
     offset = np.array([0.5 , 0. , 0. , 0.5]) #defines the offset between each foot step in this order (FR,FL,HR,HL)
     pos = np.array([0, 0, 0])
@@ -73,22 +72,20 @@ def QuadrupedCtrl():
     rate = rospy.Rate(freq)
     setJSMsg = JointState()
     while not rospy.is_shutdown():
-        print([gaitLength, gaitYaw, rotSpeed])
+        # print([gaitLength, gaitYaw, rotSpeed])
         bodytoFeet = trot.loop(gaitLength , gaitYaw , rotSpeed , T , offset , bodytoFeet0)
-    #####################################################################################
-    #####   kinematics Model: Input body orientation, deviation and foot position    ####
-    #####   and get the angles, neccesary to reach that position, for every joint    ####
+        print(bodytoFeet)
         FR_angles, FL_angles, HR_angles, HL_angles , _ = robotKinematics.solve(orn , pos , bodytoFeet)
 
         #move movable joints
         for i in range(0, footFR_index):
-            p.setJointMotorControl2(boxId, i, p.POSITION_CONTROL, FR_angles[i - footFR_index])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FR_angles[i - footFR_index]*compensate[i])
         for i in range(footFR_index + 1, footFL_index):
-            p.setJointMotorControl2(boxId, i, p.POSITION_CONTROL, FL_angles[i - footFL_index])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FL_angles[i - footFL_index]*compensate[i-footFR_index - 1])
         for i in range(footFL_index + 1, footHR_index):
-            p.setJointMotorControl2(boxId, i, p.POSITION_CONTROL, HR_angles[i - footHR_index])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HR_angles[i - footHR_index]*compensate[i-footFL_index - 1])
         for i in range(footHR_index + 1, footHL_index):
-            p.setJointMotorControl2(boxId, i, p.POSITION_CONTROL, HL_angles[i - footHL_index])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HL_angles[i - footHL_index]*compensate[i-footHR_index - 1])
 
         angle = FL_angles.tolist() 
         angle.extend(HL_angles.tolist())
@@ -112,13 +109,18 @@ if __name__ == '__main__':
 
     physicsClient = p.connect(p.GUI)#or p.DIRECT for non-graphical version
     p.setAdditionalSearchPath(pybullet_data.getDataPath()) #optionally
-    p.setGravity(0,0,-9.8)
-    cubeStartPos = [0,0,0.2]
-    cubeStartOrn = [0, 0, 0, 1]
-    FixedBase = False #if fixed no plane is imported
-    if (FixedBase == False):
-        p.loadURDF("plane.urdf")
-    boxId = p.loadURDF("/home/derek/ros_workspace/quadruped_ws/src/4-legged-robot-model/src/4leggedRobot.urdf",cubeStartPos, baseOrientation = cubeStartOrn, useFixedBase=FixedBase)
+    p.setGravity(0,0,-9.81)
+    # cubeStartPos = [0,0,0.2]
+    # cubeStartOrn = [0, 0, 0, 1]
+    # FixedBase = False #if fixed no plane is imported
+    # if (FixedBase == False):
+    p.loadURDF("plane.urdf")
+    # boxId = p.loadURDF("/home/derek/ros_workspace/quadruped_ws/src/4-legged-robot-model/src/4leggedRobot.urdf",cubeStartPos, baseOrientation = cubeStartOrn, useFixedBase=FixedBase)
+    init_position = [0, 0, 0.5]
+    init_orn = [0, 0, 0, 1]
+    quadruped = p.loadURDF("mini_cheetah/mini_cheetah.urdf", init_position, init_orn, useFixedBase=False)
+    p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
+    p.setRealTimeSimulation(1)
 
     QuadrupedCtrl()
 
