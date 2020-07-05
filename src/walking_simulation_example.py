@@ -73,8 +73,8 @@ def QuadrupedCtrl():
     rate = rospy.Rate(freq)
     setJSMsg = JointState()
     while not rospy.is_shutdown():
-        # pos , orn , gaitLength , gaitYaw , rotSpeed , T = pybulletDebug.cam_and_robotstates(quadruped)  
-        print([gaitLength, gaitYaw, rotSpeed])
+        pos , orn , gaitLength , gaitYaw , rotSpeed , T = pybulletDebug.cam_and_robotstates(quadruped)
+        # print([gaitLength, gaitYaw, rotSpeed])
         bodytoFeet = trot.loop(gaitLength , gaitYaw , rotSpeed , T , offset , bodytoFeet0)
         position = []
         for i in range(4):

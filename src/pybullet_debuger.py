@@ -27,12 +27,12 @@ class pybulletDebug:
         self.LId = p.addUserDebugParameter("L" , -0.5 , 1.5 , 0.)
         self.LrotId = p.addUserDebugParameter("Lrot" , -1.5 , 1.5 , 0.)
         self.angleId = p.addUserDebugParameter("angleWalk" , -180. , 180. , 0.)
-        self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.25)
+        self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.2)
     
     def cam_and_robotstates(self , boxId):
                 ####orientacion de la camara
         cubePos, cubeOrn = p.getBasePositionAndOrientation(boxId)
-        #p.resetDebugVisualizerCamera( cameraDistance=self.cdist, cameraYaw=self.cyaw, cameraPitch=self.cpitch, cameraTargetPosition=cubePos)
+        # p.resetDebugVisualizerCamera( cameraDistance=self.cdist*2, cameraYaw=self.cyaw/2, cameraPitch=self.cpitch*2, cameraTargetPosition=cubePos)
         keys = p.getKeyboardEvents()
         #Keys to change camera
         if keys.get(100):  #D

@@ -33,8 +33,8 @@ class trotGait:
         c = np.cos(np.deg2rad(angle))#cylindrical coordinates
         s = np.sin(np.deg2rad(angle))
         
-        A = 0.001
-        halfL = 0.05
+        A = 0.0
+        halfL = 0.1
         p_stance=halfL*(1-2*phi_st)
         
         stanceX =  c*p_stance*np.abs(V)
