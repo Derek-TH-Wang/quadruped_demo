@@ -51,7 +51,8 @@ def QuadrupedCtrl():
     #robot properties
     """initial foot position"""
     #foot separation (Ydist = 0.16 -> tetta=0) and distance to floor
-    compensate = [1, -1, -1]
+    compensateSim = [1, -1, -1]
+    compensateReal = [-1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1]
     Xdist = 0.38
     Ydist = 0.1161*2
     height = 0.25
@@ -73,7 +74,7 @@ def QuadrupedCtrl():
     rate = rospy.Rate(freq)
     setJSMsg = JointState()
     while not rospy.is_shutdown():
-        pos , orn , gaitLength , gaitYaw , rotSpeed , T = pybulletDebug.cam_and_robotstates(quadruped)
+        # pos , orn , gaitLength , gaitYaw , rotSpeed , T = pybulletDebug.cam_and_robotstates(quadruped)
         # print([gaitLength, gaitYaw, rotSpeed])
         bodytoFeet = trot.loop(gaitLength , gaitYaw , rotSpeed , T , offset , bodytoFeet0)
         position = []
@@ -86,23 +87,25 @@ def QuadrupedCtrl():
 
         #move movable joints
         for i in range(0, footFR_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FR_angles[i - footFR_index]*compensate[i])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FR_angles[i - footFR_index]*compensateSim[i])
         for i in range(footFR_index + 1, footFL_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FL_angles[i - footFL_index]*compensate[i-footFR_index - 1])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FL_angles[i - footFL_index]*compensateSim[i-footFR_index - 1])
         for i in range(footFL_index + 1, footHR_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HR_angles[i - footHR_index]*compensate[i-footFL_index - 1])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HR_angles[i - footHR_index]*compensateSim[i-footFL_index - 1])
         for i in range(footHR_index + 1, footHL_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HL_angles[i - footHL_index]*compensate[i-footHR_index - 1])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HL_angles[i - footHL_index]*compensateSim[i-footHR_index - 1])
 
         angle = FL_angles.tolist() 
         angle.extend(HL_angles.tolist())
         angle.extend(FR_angles.tolist())
         angle.extend(HR_angles.tolist())
-        # print(angle)
+        print(angle)
 
         setJSMsg.header.stamp = rospy.Time.now()
         setJSMsg.name = ["abduct_fl", "thigh_fl", "knee_fl", "abduct_hl", "thigh_hl", "knee_hl",
                             "abduct_fr", "thigh_fr", "knee_fr", "abduct_hr", "thigh_hr", "knee_hr"]
+        for i in range(12):
+            angle[i] = angle[i] * compensateReal[i]
         setJSMsg.position = angle
         setJsPub.publish(setJSMsg)
         rate.sleep()
