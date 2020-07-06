@@ -87,13 +87,13 @@ def QuadrupedCtrl():
 
         #move movable joints
         for i in range(0, footFR_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FR_angles[i - footFR_index]*compensateSim[i])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FR_angles[i - footFR_index]*compensateSim[i])#, force = 20)
         for i in range(footFR_index + 1, footFL_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FL_angles[i - footFL_index]*compensateSim[i-footFR_index - 1])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, FL_angles[i - footFL_index]*compensateSim[i-footFR_index - 1])#, force = 20)
         for i in range(footFL_index + 1, footHR_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HR_angles[i - footHR_index]*compensateSim[i-footFL_index - 1])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HR_angles[i - footHR_index]*compensateSim[i-footFL_index - 1])#, force = 20)
         for i in range(footHR_index + 1, footHL_index):
-            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HL_angles[i - footHL_index]*compensateSim[i-footHR_index - 1])
+            p.setJointMotorControl2(quadruped, i, p.POSITION_CONTROL, HL_angles[i - footHL_index]*compensateSim[i-footHR_index - 1])#, force = 20)
 
         angle = FL_angles.tolist() 
         angle.extend(HL_angles.tolist())

@@ -27,7 +27,7 @@ class pybulletDebug:
         self.LId = p.addUserDebugParameter("L" , -0.5 , 1.5 , 0.)
         self.LrotId = p.addUserDebugParameter("Lrot" , -1.5 , 1.5 , 0.)
         self.angleId = p.addUserDebugParameter("angleWalk" , -180. , 180. , 0.)
-        self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.2)
+        self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.5)
     
     def cam_and_robotstates(self , boxId):
                 ####orientacion de la camara

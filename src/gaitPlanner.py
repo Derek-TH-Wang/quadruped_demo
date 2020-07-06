@@ -79,7 +79,7 @@ class trotGait:
                                    -0.06 ,
                                    -0.05 ])
     
-        Z = 1.5*np.abs(V)*np.array([0. ,
+        Z = 0.3*np.array([0. ,
                                 0. ,
                                 0.1 , 
                                 0.1 ,
