@@ -19,6 +19,7 @@ class pybulletDebug:
         time.sleep(0.5)
         
         self.start = p.addUserDebugParameter("start", 1, 0, 0)
+        # self.stop = p.addUserDebugParameter("stop", 1, 0, 0)
         self.xId = p.addUserDebugParameter("x" , -0.10 , 0.10 , 0.)
         self.yId = p.addUserDebugParameter("y" , -0.10 , 0.10 , 0.)
         self.zId = p.addUserDebugParameter("z" , -0.10 , 0.10 , 0.)
@@ -53,6 +54,7 @@ class pybulletDebug:
             sys.exit()
         #read position from debug
         start = p.readUserDebugParameter(self.start)
+        # stop = p.readUserDebugParameter(self.stop)
         pos = np.array([p.readUserDebugParameter(self.xId),p.readUserDebugParameter(self.yId), p.readUserDebugParameter(self.zId)])
         orn = np.array([p.readUserDebugParameter(self.rollId),p.readUserDebugParameter(self.pitchId), p.readUserDebugParameter(self.yawId)])
         L = p.readUserDebugParameter(self.LId)

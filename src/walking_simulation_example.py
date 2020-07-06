@@ -100,13 +100,13 @@ def QuadrupedCtrl():
             angle.extend(HL_angles.tolist())
             angle.extend(FR_angles.tolist())
             angle.extend(HR_angles.tolist())
-            print(angle)
 
             setJSMsg.header.stamp = rospy.Time.now()
             setJSMsg.name = ["abduct_fl", "thigh_fl", "knee_fl", "abduct_hl", "thigh_hl", "knee_hl",
                                 "abduct_fr", "thigh_fr", "knee_fr", "abduct_hr", "thigh_hr", "knee_hr"]
             for i in range(12):
                 angle[i] = angle[i] * compensateReal[i]
+            # print(angle)
             setJSMsg.position = angle
             setJsPub.publish(setJSMsg)
             rate.sleep()

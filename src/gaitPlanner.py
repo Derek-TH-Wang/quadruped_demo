@@ -96,7 +96,8 @@ class trotGait:
             swingX = swingX + b(phi_sw,i,X[i]) 
             swingY = swingY + b(phi_sw,i,Y[i])
             swingZ = swingZ + b(phi_sw,i,Z[i])
-            
+        # print(phi_sw)
+        
         return swingX, swingY , swingZ
 
 
@@ -152,24 +153,28 @@ class trotGait:
         if (self.phi >= 0.99):
             self.lastTime= time.time()
         self.phi = (time.time()-self.lastTime)/T
-        # print(self.phi)
+        if self.phi > 1:
+            # print(self.phi)
+            tempPhi = 0
+        else:
+            tempPhi = self.phi
         #now it calculates step trajectory for every foot
-        step_coord = self.stepTrajectory(self.phi + offset[0] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[0,:]))) #FR
+        step_coord = self.stepTrajectory(tempPhi + offset[0] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[0,:]))) #FR
         self.bodytoFeet[0,0] =  bodytoFeet_[0,0] + step_coord[0]
         self.bodytoFeet[0,1] =  bodytoFeet_[0,1] + step_coord[1] 
         self.bodytoFeet[0,2] =  bodytoFeet_[0,2] + step_coord[2]
     
-        step_coord = self.stepTrajectory(self.phi + offset[1] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[1,:])))#FL
+        step_coord = self.stepTrajectory(tempPhi + offset[1] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[1,:])))#FL
         self.bodytoFeet[1,0] =  bodytoFeet_[1,0] + step_coord[0]
         self.bodytoFeet[1,1] =  bodytoFeet_[1,1] + step_coord[1]
         self.bodytoFeet[1,2] =  bodytoFeet_[1,2] + step_coord[2]
         
-        step_coord = self.stepTrajectory(self.phi + offset[2] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[2,:])))#BR
+        step_coord = self.stepTrajectory(tempPhi + offset[2] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[2,:])))#BR
         self.bodytoFeet[2,0] =  bodytoFeet_[2,0] + step_coord[0]
         self.bodytoFeet[2,1] =  bodytoFeet_[2,1] + step_coord[1]
         self.bodytoFeet[2,2] =  bodytoFeet_[2,2] + step_coord[2]
 
-        step_coord = self.stepTrajectory(self.phi + offset[3] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[3,:])))#BL
+        step_coord = self.stepTrajectory(tempPhi + offset[3] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[3,:])))#BL
         self.bodytoFeet[3,0] =  bodytoFeet_[3,0] + step_coord[0]
         self.bodytoFeet[3,1] =  bodytoFeet_[3,1] + step_coord[1]
         self.bodytoFeet[3,2] =  bodytoFeet_[3,2] + step_coord[2]
