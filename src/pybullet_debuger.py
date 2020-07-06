@@ -18,6 +18,7 @@ class pybulletDebug:
         self.cdist=0.66
         time.sleep(0.5)
         
+        self.start = p.addUserDebugParameter("start", 1, 0, 0)
         self.xId = p.addUserDebugParameter("x" , -0.10 , 0.10 , 0.)
         self.yId = p.addUserDebugParameter("y" , -0.10 , 0.10 , 0.)
         self.zId = p.addUserDebugParameter("z" , -0.10 , 0.10 , 0.)
@@ -27,7 +28,7 @@ class pybulletDebug:
         self.LId = p.addUserDebugParameter("L" , -0.5 , 1.5 , 0.)
         self.LrotId = p.addUserDebugParameter("Lrot" , -1.5 , 1.5 , 0.)
         self.angleId = p.addUserDebugParameter("angleWalk" , -180. , 180. , 0.)
-        self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.5)
+        self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.3)
     
     def cam_and_robotstates(self , boxId):
                 ####orientacion de la camara
@@ -51,6 +52,7 @@ class pybulletDebug:
             p.disconnect()
             sys.exit()
         #read position from debug
+        start = p.readUserDebugParameter(self.start)
         pos = np.array([p.readUserDebugParameter(self.xId),p.readUserDebugParameter(self.yId), p.readUserDebugParameter(self.zId)])
         orn = np.array([p.readUserDebugParameter(self.rollId),p.readUserDebugParameter(self.pitchId), p.readUserDebugParameter(self.yawId)])
         L = p.readUserDebugParameter(self.LId)
@@ -58,4 +60,4 @@ class pybulletDebug:
         angle = p.readUserDebugParameter(self.angleId)
         T = p.readUserDebugParameter(self.periodId)
         
-        return pos , orn , L , angle , Lrot , T
+        return start, pos , orn , L , angle , Lrot , T
