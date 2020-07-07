@@ -15,7 +15,7 @@ import pybullet as p
 import pybullet_data
 from pybullet_debuger import pybulletDebug
 
-SIM = True
+SIM = False
 
 
 class RobotParm:
@@ -56,7 +56,7 @@ def ThreadJob():
 def velCmdCallBack(msg):
     linearX = msg.linear.x
     linearY = -msg.linear.y
-    robParm.rotSpeed = msg.angular.x * 0.5
+    robParm.rotSpeed = msg.angular.x * 0.25
     if math.fabs(linearX) < 0.1 and math.fabs(linearY) < 0.1:
         robParm.gaitLength = 0
         robParm.gaitYaw = 0
