@@ -44,8 +44,20 @@ def PoseCmdCallBack(msg):
     global robotYaw
 
     robotRoll += 0.1*msg.angular.x
+    if robotRoll > math.pi/4:
+        robotRoll = math.pi/4
+    elif robotRoll < -math.pi/4:
+        robotRoll = -math.pi/4
     robotPitch += 0.1*msg.angular.y
+    if robotPitch > math.pi/4:
+        robotPitch = math.pi/4
+    elif robotPitch < -math.pi/4:
+        robotPitch = -math.pi/4
     robotYaw += 0.1*msg.angular.z
+    if robotYaw > math.pi/4:
+        robotYaw = math.pi/4
+    elif robotYaw < -math.pi/4:
+        robotYaw = -math.pi/4
 
 def QuadrupedCtrl():
     global gaitLength
