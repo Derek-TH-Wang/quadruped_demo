@@ -38,10 +38,22 @@ def velCmdCallBack(msg):
         gaitLength = math.sqrt(linearX*linearX + linearY*linearY)*0.5
         gaitYaw = math.degrees(math.atan2(linearY, linearX))
 
+def PoseCmdCallBack(msg):
+    global robotRoll
+    global robotPitch
+    global robotYaw
+
+    robotRoll += 0.1*msg.angular.x
+    robotPitch += 0.1*msg.angular.y
+    robotYaw += 0.1*msg.angular.z
+
 def QuadrupedCtrl():
     global gaitLength
     global gaitYaw
     global rotSpeed
+    global robotRoll
+    global robotPitch
+    global robotYaw
 
     footFR_index = 3
     footFL_index = 7
@@ -68,6 +80,9 @@ def QuadrupedCtrl():
     gaitLength = 0
     gaitYaw = 0
     rotSpeed = 0
+    robotRoll = 0
+    robotPitch = 0
+    robotYaw = 0
     T = 0.25
 
     freq = 200
@@ -76,6 +91,8 @@ def QuadrupedCtrl():
     while not rospy.is_shutdown():
         # start, pos , orn , gaitLength , gaitYaw , rotSpeed , T = pybulletDebug.cam_and_robotstates(quadruped)
         start, _ , _ , _ , _ , _ , _ = pybulletDebug.cam_and_robotstates(quadruped)
+        orn = np.array([robotPitch, robotRoll, robotYaw])
+        # print(orn)
         if start:
             # print([gaitLength, gaitYaw, rotSpeed])
             bodytoFeet = trot.loop(gaitLength , gaitYaw , rotSpeed , T , offset , bodytoFeet0)
@@ -116,6 +133,7 @@ if __name__ == '__main__':
     rospy.init_node('quatruped_ctrl', anonymous=True)
     setJsPub = rospy.Publisher('/set_js', JointState, queue_size=10)
     rospy.Subscriber("/cmd_vel", Twist, velCmdCallBack)
+    rospy.Subscriber("/cmd_pose", Twist, PoseCmdCallBack)
     add_thread = threading.Thread(target=ThreadJob)
     add_thread.start()
 
@@ -123,12 +141,7 @@ if __name__ == '__main__':
     pybulletDebug = pybulletDebug()
     p.setAdditionalSearchPath(pybullet_data.getDataPath()) #optionally
     p.setGravity(0,0,-9.81)
-    # cubeStartPos = [0,0,0.2]
-    # cubeStartOrn = [0, 0, 0, 1]
-    # FixedBase = False #if fixed no plane is imported
-    # if (FixedBase == False):
     p.loadURDF("plane.urdf")
-    # boxId = p.loadURDF("/home/derek/ros_workspace/quadruped_ws/src/4-legged-robot-model/src/4leggedRobot.urdf",cubeStartPos, baseOrientation = cubeStartOrn, useFixedBase=FixedBase)
     init_position = [0, 0, 0.5]
     init_orn = [0, 0, 0, 1]
     quadruped = p.loadURDF("mini_cheetah/mini_cheetah.urdf", init_position, init_orn, useFixedBase=False)
