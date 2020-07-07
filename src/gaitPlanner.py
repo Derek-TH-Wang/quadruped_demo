@@ -146,8 +146,14 @@ class trotGait:
         
     #computes step trajectory for every foot, defining L which is like velocity command, its angle, 
     #offset between each foot, period of time of each step and the initial vector from center of robot to feet.
-    def loop(self , V , angle , Wrot , T , offset , bodytoFeet_ ):
-        
+    def loop(self , robParm):
+        V = robParm.gaitLength
+        angle = robParm.gaitYaw
+        Wrot = robParm.rotSpeed
+        T = robParm.T
+        offset = robParm.offset
+        bodytoFeet_ = robParm.bodytoFeet0
+
         if T <= 0.01: 
             T = 0.01
         

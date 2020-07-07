@@ -31,7 +31,7 @@ class pybulletDebug:
         self.angleId = p.addUserDebugParameter("angleWalk" , -180. , 180. , 0.)
         self.periodId = p.addUserDebugParameter("stepPeriod" , 0.1 , 3. , 0.25)
     
-    def cam_and_robotstates(self , boxId):
+    def cam_and_robotstates(self , SIM, boxId, robParm):
                 ####orientacion de la camara
         cubePos, cubeOrn = p.getBasePositionAndOrientation(boxId)
         # p.resetDebugVisualizerCamera( cameraDistance=self.cdist*2, cameraYaw=self.cyaw/2, cameraPitch=self.cpitch*2, cameraTargetPosition=cubePos)
@@ -54,12 +54,16 @@ class pybulletDebug:
             sys.exit()
         #read position from debug
         start = p.readUserDebugParameter(self.start)
-        # stop = p.readUserDebugParameter(self.stop)
-        pos = np.array([p.readUserDebugParameter(self.xId),p.readUserDebugParameter(self.yId), p.readUserDebugParameter(self.zId)])
-        orn = np.array([p.readUserDebugParameter(self.rollId),p.readUserDebugParameter(self.pitchId), p.readUserDebugParameter(self.yawId)])
-        L = p.readUserDebugParameter(self.LId)
-        Lrot = p.readUserDebugParameter(self.LrotId)
-        angle = p.readUserDebugParameter(self.angleId)
-        T = p.readUserDebugParameter(self.periodId)
+        if SIM:
+            robParm.robotX = p.readUserDebugParameter(self.xId)
+            robParm.robotY = p.readUserDebugParameter(self.yId)
+            robParm.robotZ = p.readUserDebugParameter(self.zId)
+            robParm.robotRoll = p.readUserDebugParameter(self.rollId)
+            robParm.robotPitch = p.readUserDebugParameter(self.pitchId)
+            robParm.robotYaw = p.readUserDebugParameter(self.yawId)
+            robParm.gaitLength = p.readUserDebugParameter(self.LId)
+            robParm.rotSpeed = p.readUserDebugParameter(self.LrotId)
+            robParm.gaitYaw = p.readUserDebugParameter(self.angleId)
+            robParm.T = p.readUserDebugParameter(self.periodId)
         
-        return start, pos , orn , L , angle , Lrot , T
+        return start

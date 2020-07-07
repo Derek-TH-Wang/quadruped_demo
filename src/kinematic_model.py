@@ -53,7 +53,9 @@ class robotKinematics:
         # self.bodytoBR4 = np.array([-self.Xdist/2 , -self.Ydist/2 , -self.height])
         # self.bodytoBL4 = np.array([-self.Xdist/2 ,  self.Ydist/2 , -self.height])
 
-    def solve(self, orn , pos , bodytoFeet):
+    def solve(self, bodytoFeet, robParm):
+        pos = np.array([robParm.robotX, robParm.robotY, robParm.robotZ])
+        orn = np.array([robParm.robotRoll, robParm.robotPitch, robParm.robotYaw])
         bodytoFR4 = np.asarray([bodytoFeet[0,0],bodytoFeet[0,1],bodytoFeet[0,2]])
         bodytoFL4 = np.asarray([bodytoFeet[1,0],bodytoFeet[1,1],bodytoFeet[1,2]])
         bodytoBR4 = np.asarray([bodytoFeet[2,0],bodytoFeet[2,1],bodytoFeet[2,2]])
