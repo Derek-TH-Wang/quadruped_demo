@@ -56,7 +56,7 @@ def ThreadJob():
 def velCmdCallBack(msg):
     linearX = msg.linear.x
     linearY = -msg.linear.y
-    robParm.rotSpeed = msg.angular.x * 0.25
+    robParm.rotSpeed = msg.angular.x * 0.125
     if math.fabs(linearX) < 0.1 and math.fabs(linearY) < 0.1:
         robParm.gaitLength = 0
         robParm.gaitYaw = 0
@@ -67,20 +67,20 @@ def velCmdCallBack(msg):
 
 def PoseCmdCallBack(msg):
     robParm.robotRoll += 0.1*msg.angular.x
-    if robParm.robotRoll > math.pi/4:
-        robParm.robotRoll = math.pi/4
-    elif robParm.robotRoll < -math.pi/4:
-        robParm.robotRoll = -math.pi/4
+    if robParm.robotRoll > math.pi/6:
+        robParm.robotRoll = math.pi/6
+    elif robParm.robotRoll < -math.pi/6:
+        robParm.robotRoll = -math.pi/6
     robParm.robotPitch += 0.1*msg.angular.y
-    if robParm.robotPitch > math.pi/4:
-        robParm.robotPitch = math.pi/4
-    elif robParm.robotPitch < -math.pi/4:
-        robParm.robotPitch = -math.pi/4
+    if robParm.robotPitch > math.pi/6:
+        robParm.robotPitch = math.pi/6
+    elif robParm.robotPitch < -math.pi/6:
+        robParm.robotPitch = -math.pi/6
     robParm.robotYaw += 0.1*msg.angular.z
-    if robParm.robotYaw > math.pi/4:
-        robParm.robotYaw = math.pi/4
-    elif robParm.robotYaw < -math.pi/4:
-        robParm.robotYaw = -math.pi/4
+    if robParm.robotYaw > math.pi/6:
+        robParm.robotYaw = math.pi/6
+    elif robParm.robotYaw < -math.pi/6:
+        robParm.robotYaw = -math.pi/6
 
 
 def InitSimEnv():
@@ -160,7 +160,7 @@ def QuadrupedCtrl():
                              "abduct_fr", "thigh_fr", "knee_fr", "abduct_hr", "thigh_hr", "knee_hr"]
             for i in range(12):
                 angle[i] = angle[i] * robParm.compensateReal[i]
-            print(angle)
+            # print(angle)
             setJSMsg.position = angle
             setJsPub.publish(setJSMsg)
             rate.sleep()

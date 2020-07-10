@@ -41,7 +41,7 @@ class robotKinematics:
         self.W = 0.099 #width of robot joints
         self.coxa = 0.0671#coxa length
         self.femur = 0.206#femur length
-        self.tibia = 0.205#tibia length
+        self.tibia = 0.185#tibia length
         # #body frame to coxa frame vector
         self.bodytoFR0 = np.array([ self.L/2, -self.W/2 , 0])
         self.bodytoFL0 = np.array([ self.L/2,  self.W/2 , 0])
