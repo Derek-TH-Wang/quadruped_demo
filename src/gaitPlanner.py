@@ -113,6 +113,8 @@ class trotGait:
             circleTrayectory = 90. - np.rad2deg(footAngle - self.alpha)
         else:
             circleTrayectory = 270. - np.rad2deg(footAngle - self.alpha)
+
+        # print(circleTrayectory)
         
         stepOffset = 0.5
         if phi <= stepOffset: #stance phase
@@ -140,7 +142,7 @@ class trotGait:
         coord[0] = stepX_long + stepX_rot
         coord[1] = stepY_long + stepY_rot
         coord[2] = stepZ_long + stepZ_rot
-        
+        # print(stepY_rot)
         return coord 
         
         
@@ -162,6 +164,8 @@ class trotGait:
             self.first = False
         if (self.phi >= 0.99):
             self.lastTime= time.time()
+
+        # print(time.time()-self.lastTime)
         self.phi = (time.time()-self.lastTime)/T
         # print(self.phi)
         #now it calculates step trajectory for every foot
@@ -169,6 +173,8 @@ class trotGait:
         self.bodytoFeet[0,0] =  bodytoFeet_[0,0] + step_coord[0]
         self.bodytoFeet[0,1] =  bodytoFeet_[0,1] + step_coord[1] 
         self.bodytoFeet[0,2] =  bodytoFeet_[0,2] + step_coord[2]
+
+        # print(self.bodytoFeet[0, 0], bodytoFeet_[0,0], step_coord[0])
     
         step_coord = self.stepTrajectory(self.phi + offset[1] , V , angle , Wrot , np.squeeze(np.asarray(bodytoFeet_[1,:])))#FL
         self.bodytoFeet[1,0] =  bodytoFeet_[1,0] + step_coord[0]
@@ -184,6 +190,8 @@ class trotGait:
         self.bodytoFeet[3,0] =  bodytoFeet_[3,0] + step_coord[0]
         self.bodytoFeet[3,1] =  bodytoFeet_[3,1] + step_coord[1]
         self.bodytoFeet[3,2] =  bodytoFeet_[3,2] + step_coord[2]
-#            
+
+
+
 
         return self.bodytoFeet

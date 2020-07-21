@@ -8,13 +8,13 @@ Created on Thu Feb 20 18:20:45 2020
 import numpy
 
 def checkdomain(D):
-    if D > 1 or D < -1:
+    if D > 1.00001 or D < -1.00001:
         print("____OUT OF DOMAIN____")
-        if D > 1: 
-            D = 0.99
+        if D > 1.00001:
+            D = 0.99999
             return D
-        elif D < -1:
-            D = -0.99
+        elif D < -1.00001:
+            D = -0.99999
             return D
     else:
         return D

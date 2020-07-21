@@ -36,7 +36,7 @@ class robotKinematics:
         # self.W = 0.098 #width of robot joints
         # self.coxa = 0.062#coxa length
         # self.femur = 0.209#femur length
-        # self.tibia = 0.18#tibia length
+        # self.tibia = 0.195#tibia length
         self.L = 0.378 #length of robot joints
         self.W = 0.099 #width of robot joints
         self.coxa = 0.0671#coxa length
@@ -61,12 +61,18 @@ class robotKinematics:
         bodytoBR4 = np.asarray([bodytoFeet[2,0],bodytoFeet[2,1],bodytoFeet[2,2]])
         bodytoBL4 = np.asarray([bodytoFeet[3,0],bodytoFeet[3,1],bodytoFeet[3,2]])
 
+        # print(bodytoFR4)
+
         """defines 4 vertices which rotates with the body"""
         _bodytoFR0 = geo.transform(self.bodytoFR0 , orn, pos)
         _bodytoFL0 = geo.transform(self.bodytoFL0 , orn, pos)
         _bodytoBR0 = geo.transform(self.bodytoBR0 , orn, pos)
         _bodytoBL0 = geo.transform(self.bodytoBL0 , orn, pos)
         """defines coxa_frame to foot_frame leg vector neccesary for IK"""
+        # print(_bodytoFR0)
+        # print(orn)
+        # print(pos)
+
         FRcoord = bodytoFR4 - _bodytoFR0
         FLcoord = bodytoFL4 - _bodytoFL0
         BRcoord = bodytoBR4 - _bodytoBR0
@@ -78,8 +84,11 @@ class robotKinematics:
         _FLcoord = geo.transform(FLcoord , undoOrn, undoPos)
         _BRcoord = geo.transform(BRcoord , undoOrn, undoPos)
         _BLcoord = geo.transform(BLcoord , undoOrn, undoPos)
-        
-        
+
+        # _FRcoord[0] = 0.32901515505988754
+        # _FRcoord[1] = -0.0671
+        # _FRcoord[2] = -0.21125820159444264
+
         FR_angles = IK.solve_R(_FRcoord , self.coxa , self.femur , self.tibia)
         FL_angles = IK.solve_L(_FLcoord , self.coxa , self.femur , self.tibia)
         BR_angles = IK.solve_R(_BRcoord , self.coxa , self.femur , self.tibia)
@@ -93,5 +102,7 @@ class robotKinematics:
                                  [_bodytofeetFL[0] , _bodytofeetFL[1] , _bodytofeetFL[2]],
                                  [_bodytofeetBR[0] , _bodytofeetBR[1] , _bodytofeetBR[2]],
                                  [_bodytofeetBL[0] , _bodytofeetBL[1] , _bodytofeetBL[2]]])
+
+        # print(FRcoord, _FRcoord)
         
         return FR_angles, FL_angles, BR_angles, BL_angles , _bodytofeet

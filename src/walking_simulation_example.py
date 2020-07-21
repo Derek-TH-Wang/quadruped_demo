@@ -14,6 +14,7 @@ from gaitPlanner import trotGait
 import pybullet as p
 import pybullet_data
 from pybullet_debuger import pybulletDebug
+from simple_pid import PID
 
 SIM = False
 
@@ -30,7 +31,7 @@ class RobotParm:
         self.robotPitch = 0
         self.robotYaw = 0
         self.T = 0.25
-        self.freq = 200
+        self.freq = 1000
 
         self.footFR_index = 3
         self.footFL_index = 7
@@ -82,7 +83,6 @@ def PoseCmdCallBack(msg):
     elif robParm.robotYaw < -math.pi/6:
         robParm.robotYaw = -math.pi/6
 
-
 def InitSimEnv():
     global quadruped
     global pybulletDebug
@@ -98,6 +98,8 @@ def InitSimEnv():
     print("current path = " + path)
     quadruped = p.loadURDF(path + "/src/quadruped_robot.urdf",
                            init_position, init_orn, useFixedBase=False)
+    # quadruped = p.loadURDF("mini_cheetah/mini_cheetah.urdf",
+    #                        init_position, init_orn, useFixedBase=False)
     p.resetDebugVisualizerCamera(0.2, 45, -30, [1, -1, 1])
     p.setRealTimeSimulation(1)
     startPos = [0.02, -0.78, 1.74, 0.02, -0.78,
@@ -127,10 +129,23 @@ def QuadrupedCtrl():
     setJSMsg = JointState()
 
     while not rospy.is_shutdown():
+        get_orientation = []
+        get_euler = []
         start = pybulletDebug.cam_and_robotstates(SIM, quadruped, robParm)
+        #start = True
         if start:
+            pose_orn = p.getBasePositionAndOrientation(quadruped)
+            for i in range(4):
+                get_orientation.append(pose_orn[1][i])
+            get_euler = p.getEulerFromQuaternion(get_orientation)
+            # robParm.robotRoll = -get_euler[0] * 1.5
+            # robParm.robotPitch = -get_euler[1] * 0.5
+            print(get_euler[0], get_euler[1], get_euler[2])
             bodytoFeet = trot.loop(robParm)
             position = []
+            robParm.robotX = pidX(get_euler[1])
+            robParm.robotY = pidY(get_euler[0])
+
             for i in range(4):
                 for j in range(3):
                     position.append(bodytoFeet[i][j].tolist())
@@ -173,6 +188,11 @@ if __name__ == '__main__':
     rospy.Subscriber("/cmd_pose", Twist, PoseCmdCallBack)
     add_thread = threading.Thread(target=ThreadJob)
     add_thread.start()
+
+    pidX = PID(-0.5, 0.0, 0.001, setpoint=0.)
+    pidY = PID(0.5, 0.0, 0.001, setpoint=0.)
+    pidX.sample_time = 0.02  # update every 0.02 seconds
+    pidY.sample_time = 0.02
 
     robotKinematics = robotKinematics()
     trot = trotGait()
